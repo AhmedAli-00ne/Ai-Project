@@ -9,3 +9,6 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 Game = False
+    pygame.quit()
+if __name__ == "__main__":
+    main()
