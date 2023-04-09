@@ -3,15 +3,15 @@ import os
 import numpy as np
 import math
 
-Width = 400
+Width = 600
 gridWidth = 10
-Height = 400
+Height = 600
 gridHeight = 10
-margin = 1
+margin = 1.2
 Window = pygame.display.set_mode((Width, Height))
 pygame.display.set_caption("Ai Project")
 Hero = pygame.image.load("Hero.png")
-
+actions = []
 grid = []
 for row in range(10):
     grid.append([])
@@ -36,10 +36,19 @@ def main():
                 Game = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
-                col = round(pos[0] / (Width / gridWidth)) - 1
-                row = round(pos[1] // (Height // gridHeight))
-                print("Click ", pos, "Grid coordinates: ", row, col)
+                col = (pos[0] // (Width // gridWidth))
+                row = (pos[1] // (Height // gridHeight))
+                actions.append((row, col))
                 grid[row][col] = 1
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    for row in range(10):
+                        for col in range(10):
+                            grid[row][col] = 0
+                elif event.key == pygame.K_d:
+                    grid[actions[-1][0]][actions[-1][1]] = 0
+                    actions.remove(actions[-1])
+                    
         DrawGrid()       
         pygame.display.update()
     pygame.quit()
