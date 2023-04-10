@@ -2,6 +2,7 @@ import pygame
 import os
 import numpy as np
 import math
+import time
 
 Width = 600
 gridWidth = 10
@@ -69,8 +70,6 @@ def createGraph(grid):
 def uniformCostSearch(graph, heroPos, goalPos):
     explored = []
     queue = [[heroPos]]
-    if heroPos == goalPos:
-        return "We are already at the goal"
     while queue:
         path = queue.pop(0)
         node = path[-1]
@@ -83,7 +82,7 @@ def uniformCostSearch(graph, heroPos, goalPos):
                 if neighbour == goalPos:
                     return new_path
             explored.append(node)
-    return "Goal is not reachable"
+    return None
         
 def DrawGrid():
     for row in range(10):
@@ -98,10 +97,14 @@ def DrawGrid():
                 Window.blit(Hero, ((margin + Width // gridWidth) * col + margin, (margin + Height // gridHeight) * row + margin))
             elif grid[row][col] == 3:
                 Window.blit(Goal, ((margin + Width // gridWidth) * col + margin, (margin + Height // gridHeight) * row + margin))
+            elif grid[row][col] == 4:
+                color = (0, 255, 0)
+                pygame.draw.rect(Window, color, [(margin + Width // gridWidth) * col + margin, (margin + Height // gridHeight) * row + margin, Width // gridWidth, Height // gridHeight])
             pygame.display.update()
 
 def DrawSecondScreen():
     global Width, Height, Window
+    Window.fill((255, 255, 255))
     pygame.draw.rect(Window, (255, 255, 255), (0, 0, Width // 2, 100))
     pygame.draw.rect(Window, (255, 255, 255), (Width // 2, 0, Width // 2, 100))
     pygame.draw.rect(Window, (255, 255, 255), (0, 100, Width // 2, 100))
@@ -123,6 +126,15 @@ def DrawSecondScreen():
     text = font.render("Iterative deepening depth-first search", 1, (0, 0, 0))
     Window.blit(text, ((Width // 2)  - (text.get_width() // 2), (50) + 200 - (text.get_height() // 2)))
     pygame.display.update()           
+
+def DrawPath(path):
+    if path == None:
+        print("No path found")
+    else:
+        for i in range(len(path)):
+            grid[path[i][0]][path[i][1]] = 4
+            DrawGrid()
+            time.sleep(0.5)
 
 def getAnswer(mousePos):
     if mousePos[0] < Width // 2 and mousePos[1] < 100:
@@ -180,8 +192,9 @@ def main():
                         goalCount = 1
                 elif secondScreen:
                     pos = pygame.mouse.get_pos()
-                    if getAnswer(pos) != None:
-                        answer = getAnswer(pos)
+                    if getAnswer(pos) == "UCS":
+                        Window.fill((0, 0, 0))
+                        DrawPath(uniformCostSearch(graph, heroPos, goalPos))
                         secondScreen = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
@@ -207,7 +220,7 @@ def main():
                     secondScreen = True
                     DrawSecondScreen()
         if secondScreen == False:            
-            DrawGrid()       
+           DrawGrid()       
     pygame.quit()
 if __name__ == "__main__":
     main()
