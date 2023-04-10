@@ -11,6 +11,8 @@ margin = 1.2
 Window = pygame.display.set_mode((Width, Height))
 pygame.display.set_caption("Ai Project")
 Hero = pygame.image.load("Hero.png")
+Goal = pygame.image.load("1.png")
+Goal = pygame.transform.scale(Goal, (Width // gridWidth, Height // gridHeight))
 Hero = pygame.transform.scale(Hero, (Width // gridWidth, Height // gridHeight))
 actions = []
 grid = []
