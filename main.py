@@ -83,7 +83,7 @@ def uniformCostSearch(graph, heroPos, goalPos):
                     return new_path
             explored.append(node)
     return None
-        
+
 def DrawGrid():
     for row in range(10):
         for col in range(10):
