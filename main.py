@@ -3,6 +3,7 @@ import os
 import numpy as np
 import math
 import time
+from queue import Queue
 
 Width = 600
 gridWidth = 10
@@ -84,6 +85,28 @@ def uniformCostSearch(graph, heroPos, goalPos):
             explored.append(node)
     return None
         
+
+def bfs(graph, start, goal):
+    visited = set()
+    queue = Queue()
+    queue.put([start])
+
+    while not queue.empty():
+        path = queue.get()
+        node = path[-1]
+
+        if node == goal:
+            return path
+
+        if node not in visited:
+            for neighbor in graph[node]:
+                new_path = list(path)
+                new_path.append(neighbor)
+                queue.put(new_path)
+
+            visited.add(node)
+    return None
+
 def DrawGrid():
     for row in range(10):
         for col in range(10):
@@ -195,6 +218,10 @@ def main():
                     if getAnswer(pos) == "UCS":
                         Window.fill((0, 0, 0))
                         DrawPath(uniformCostSearch(graph, heroPos, goalPos))
+                        secondScreen = False
+                    elif getAnswer(pos) == "BFS":
+                        Window.fill((0, 0, 0))
+                        DrawPath(bfs(graph, heroPos, goalPos))
                         secondScreen = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
